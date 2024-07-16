@@ -23,15 +23,29 @@
  <hr>
  	단어목록
  <hr>
- <ul>
+<%--  <ul>
  	 <!-- for(String sido : sido_list)  -->
 	 <c:forEach var="word" items="${ myMap.wordMap }">
 	  <li> ${ word } </li>
 	 </c:forEach>
-</ul> 
- <ul>
+</ul>  --%>
+<dl>
+	 <c:forEach var="entry" items="${ myMap.wordMap }">
+	  <dt><b>${ entry.key }</b></dt>
+	  <dd>${ entry.value }</dd>
+	  <dd>${ entry }</dd>
+	 </c:forEach>
+</dl>
+<dl>
+	 <c:forEach var="entry" items="${ myProp.dbProp }">
+	  <dt><b>${ entry.key }</b></dt>
+	  <dd>${ entry.value }</dd>
+	  <dd>${ entry }</dd>
+	 </c:forEach>
+</dl>
+<%--  <ul>
  	 <!-- for(String sido : sido_list)  -->
 	 <c:forEach var="prop" items="${ myProp.dbProp }">
 	  <li> ${ prop } </li>
 	 </c:forEach>
-</ul>
+</ul> --%>
