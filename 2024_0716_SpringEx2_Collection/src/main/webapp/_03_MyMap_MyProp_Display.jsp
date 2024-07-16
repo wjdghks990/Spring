@@ -37,10 +37,9 @@
 	 </c:forEach>
 </dl>
 <dl>
-	 <c:forEach var="entry" items="${ myProp.dbProp }">
-	  <dt><b>${ entry.key }</b></dt>
-	  <dd>${ entry.value }</dd>
-	  <dd>${ entry }</dd>
+	 <c:forEach var="prop" items="${ myProp.dbProp }">
+	  <dt><b>${ prop.key }</b></dt>
+	  <dd>${ prop.value }</dd>
 	 </c:forEach>
 </dl>
 <%--  <ul>
