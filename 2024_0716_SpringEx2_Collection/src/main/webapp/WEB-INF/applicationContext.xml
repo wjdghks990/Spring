@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+	<!-- MyList객체 생성코드 작성 
+		Setter Injection이용해서 sido_list넣어준다
+		MyList myListBean = new MyList();
+	-->  
+	<bean id="myListBean" class="myutil.MyList">
+		<property name="sido_list">
+			<!-- List list = new ArrayList(); 
+				myListBean.setSido_list(list);
+			-->
+			<list>
+				<value>서울</value> <!-- list.add("서울"); -->
+				<value>경기</value>
+				<value>인천</value>
+				<value>대전</value>
+				<value>대구</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- MySet객체생성을 위한 코드작성 -->
+	<bean id="mySetBean" class="myutil.MySet">
+		<property name="fruit_set">
+			<!-- new HashSet() -->
+			<set>
+				<value>사과</value>
+				<value>참외</value>
+				<value>수박</value>
+				<value>딸기</value>
+				<value>포도</value>
+			</set>
+		</property>
+	</bean>
+	
+	<!-- MyMap 객체생성을 위한 코드작성 -->
+	<bean id="myMapBean" class="myutil.MyMap">
+		<constructor-arg>
+			<!-- Map map = new HashMqp() -->
+			<map>
+				<!-- map.put("one", "하나를 의미합니다" -->
+				<entry key="one"   value="하나를 의미합니다"/>
+				<entry key="two"   value="둘을 의미합니다"/>
+				<entry key="three" value="셋을 의미합니다"/>
+				<entry key="four"  value="넷을 의미합니다"/>
+				<entry key="five"  value="다섯을 의미합니다"/>
+			</map>			
+		</constructor-arg>
+	</bean>
+	
+	<!-- MyProp 생성할 코드작성 -->
+	<bean id="myPropBean" class="myutil.MyProp">
+		<property name="dbProp">
+			<!-- Properties prop = new Properties() -->
+			<props>
+				<prop key="driver">oracle.jdbc.driver.OracleDriver</prop>
+				<prop key="url">jdbc:oracle:thin:@localhost:1521:xe</prop>
+				<prop key="username">scott</prop>
+				<prop key="password">tiger</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>
