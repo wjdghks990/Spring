@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+ <!-- 빈?: 객체의 다른 표현 (객체==빈) -->
+ 
+ <!-- Constructor injection (생성자를 통해서 값을 넣어준다) -->
+ <!-- PersonVO p1 = new PersonVo("일길동",20,"서울 관악 남부순환로") -->
+ <bean id="p1" class="vo.PersonVo" scope="singleton">
+ 	<constructor-arg value="일길동" type="String" index="0"/>
+ 	<constructor-arg value="20"   type="int" 	index="1"/>
+ 	<constructor-arg value="서울 관악 남부순환로 111" index="2"/>
+ 	<!-- index는 굳이 넣지 않아도 되나, 순서를 맞춰주어야 한다. -->
+ 	<!-- type은 굳이 넣지 않아도 된다. -->
+ </bean>
+ 
+ <!-- Setter Injection -->
+ <!-- 							   scope속성: 생략시 기본값 singleton 
+ 											 prototype <= 요청시마다 생성 // 처음 시작시엔 요청 안됨
+ -->
+ <bean id="p2" class="vo.PersonVo" scope="prototype">
+ 	<!-- p2.setName("이길동") -->
+ 	<property name="name" value="이길동"/>
+ 	<property name="age" value="30"/>
+ 	<property name="addr" value="서울 관악 남부순환로 222"/>
+ </bean>
+ 
+ <!-- String nameBean = new String("삼길동") -->
+ <bean id="nameBean" class="java.lang.String">
+ 	<constructor-arg value="삼길동"></constructor-arg>
+ </bean>
+ 
+ <!-- int age = 10; <- bean으로 생성 불가!! bean == 객체! -->
+ <!-- Integer ageBean = new Integer(10); -->
+ <bean id="ageBean" class="java.lang.Integer">
+ 	<constructor-arg value="30"/>
+ </bean>
+ 
+ <!-- String addrBean = new String("서울시 관악구 봉천동") -->
+ <bean id="addrBean" class="java.lang.String">
+ 	<constructor-arg value="서울시 관악구 봉천동"></constructor-arg>
+ </bean> 
+ 
+ <!-- 위에서 생성된 객체를 Setter Injection 주입받는다 -->
+ <bean id="p3" class="vo.PersonVo">
+ 	<property name="name" ref="nameBean"/>
+ 	<property name="age" ref="ageBean"/>
+ 	<property name="addr" ref="addrBean"/>
+ </bean>   
+ 
+ <!-- 위에서 생성된 객체를 Constructor를 통한 Injection받는다 -->
+ <bean id="p4" class="vo.PersonVo">
+	<constructor-arg ref="nameBean"/>
+	<constructor-arg ref="ageBean"/>
+	<constructor-arg ref="addrBean"/>
+ </bean>   
+</beans>
