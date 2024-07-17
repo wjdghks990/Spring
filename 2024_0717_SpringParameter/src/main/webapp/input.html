@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+	
+	function send1(f) {
+		
+		let name = f.name.value.trim(); 
+		let age = f.age.value.trim();
+		let tel = f.tel.value.trim();	
+		//입력값 체크
+		if(name == "") {
+			alert("이름을 입력하시오.");
+			f.name.value = "";
+			f.name.focus();
+			return;			
+		}
+		if(age == "") {
+			alert("나이를 입력하시오.");
+			f.age.value = "";
+			f.age.focus();
+			return;			
+		}
+		if(tel == "") {
+			alert("전화번호를 입력하시오.");
+			f.tel.value = "";
+			f.tel.focus();
+			return;			
+		}
+		
+		
+		f.action="insert1.do";
+		f.submit();
+	}
+	
+	function send2(f) {
+			
+		let name = f.name.value.trim(); 
+		let age = f.age.value.trim();
+		let tel = f.tel.value.trim();	
+		//입력값 체크
+		if(name == "") {
+			alert("이름을 입력하시오.");
+			f.name.value = "";
+			f.name.focus();
+			return;			
+		}
+		if(age == "") {
+			alert("나이를 입력하시오.");
+			f.age.value = "";
+			f.age.focus();
+			return;			
+		}
+		if(tel == "") {
+			alert("전화번호를 입력하시오.");
+			f.tel.value = "";
+			f.tel.focus();
+			return;			
+		}
+		
+		
+		f.action="insert2.do";
+		f.submit();
+	}
+	
+	function send3(f) {
+		
+		let name = f.name.value.trim(); 
+		let age = f.age.value.trim();
+		let tel = f.tel.value.trim();	
+		//입력값 체크
+		if(name == "") {
+			alert("이름을 입력하시오.");
+			f.name.value = "";
+			f.name.focus();
+			return;			
+		}
+		if(age == "") {
+			alert("나이를 입력하시오.");
+			f.age.value = "";
+			f.age.focus();
+			return;			
+		}
+		if(tel == "") {
+			alert("전화번호를 입력하시오.");
+			f.tel.value = "";
+			f.tel.focus();
+			return;			
+		}
+		
+		
+		f.action="insert3.do";
+		f.submit();
+	}
+		
+</script>
+</head>
+<body>
+<form>
+	<table border="1">
+		<tr>
+			<th>이름</th>
+			<td><input name="name" value="홍길동"></td>
+		</tr>
+		<tr>
+			<th>나이</th>
+			<td><input name="age" value="20"></td>
+		</tr>
+		<tr>
+			<th>전화</th>
+			<td><input name="tel" value="010-111-1234"></td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" align="center">
+				<input type="button" value="낱개로 받기" onclick="send1(this.form)">
+				<input type="button" value="객체로 받기" onclick="send2(this.form)">
+				<input type="button" value="Map으로 받기" onclick="send3(this.form)">
+			</td>
+		</tr>
+	</table>
+</form>	
+	
+</body>
+</html>
