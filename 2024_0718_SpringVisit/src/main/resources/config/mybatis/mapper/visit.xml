@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="visit">
+	
+	<!-- 전체조회 -->
+	<select id="visit_list" resultType="visit">
+	select
+		rownum as no, v.*
+	from	  						 																		
+		(select * from visit order by idx desc) v	
+	</select>
+	
+	<!-- 검색조건별 조회 -->
+	<select id="visit_list_condition" parameterType="Map" resultType="visit">
+		<!-- 페이징 처리를 위해 no를 명시함 -->
+		select * from
+		(
+			select
+				rank() over(order by idx desc) as no,
+				v.*
+			from
+			(
+			select * from visit		
+			<!-- Dynamic Query: 조건별 query -->
+			<trim prefix="where" prefixOverrides="or"> <!-- prefixOverrides 지정한 문자열을 제거하여 재정의 => content만을 수행할 때 where or ... 가 나오는 상황 방지 -->
+				<if test="name!=null"> <!-- DB에서 문자열 결합 연산 || -->
+					name like '%' || #{ name } || '%'
+				</if>
+				<if test="content!=null">
+					or content like '%' || #{ content } || '%'
+				</if>
+			</trim>	
+			) v
+		)
+		where no between #{ start } and #{ end }
+			
+	</select>
+	
+	<!-- 검색 조건별 레코드 수 구하기 -->
+	<select id="visit_row_total" parameterType="Map" resultType="int">
+		select nvl(count(*),0) from visit_view		
+		<!-- Dynamic Query: 조건별 query -->
+		<trim prefix="where" prefixOverrides="or"> <!-- prefixOverrides 지정한 문자열을 제거하여 재정의 => content만을 수행할 때 where or ... 가 나오는 상황 방지 -->
+			<if test="name!=null"> <!-- DB에서 문자열 결합 연산 || -->
+				name like '%' || #{ name } || '%'
+			</if>
+			<if test="content!=null">
+				or content like '%' || #{ content } || '%'
+			</if>
+		</trim>	
+	</select>
+	
+	<!-- 추가 
+		parameter가 객체(VisitVo)로 전달되면 mybatis parameter변수는 
+		VO내의 속성명을 이용할 수 있다.
+	-->
+	<insert id="visit_insert" parameterType="vo.VisitVo">
+		insert into visit values(
+								 seq_visit_idx.nextVal,
+								 #{ name },
+								 #{ content },
+								 #{ pwd },
+								 #{ ip },
+								 sysdate
+								 )	
+	</insert>
+	
+	<!-- 삭제 -->
+	<delete id="visit_delete" parameterType="int">
+		delete from visit where idx = #{ idx }
+	</delete>
+	
+	<!-- 한건만 조회 -->
+	<select id="visit_one" resultType="vo.VisitVo" parameterType="int">
+		select * from visit_view where idx = #{ idx }
+	</select>
+	
+	<!-- 수정 -->
+	<update id="visit_update" parameterType="vo.VisitVo">
+	update visit set name=#{ name },
+	 				 content=#{ content }, 
+	 				 pwd=#{ pwd }, 
+	 				 ip=#{ ip }, 
+					 regdate=sysdate 
+					 where idx=#{ idx } 
+	
+	</update>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

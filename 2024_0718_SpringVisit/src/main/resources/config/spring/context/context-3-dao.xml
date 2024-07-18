@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+					http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+					http://www.springframework.org/schema/context
+					http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+					
+	<!-- VisitDao 생성관련 코드 
+									autowire="byType"	<- Type이 일치하는 객체 연결
+									autowire="byName"	<- Name이 일치하는 객체 연결
+									autowire="default"	<- 1.Type => 2.Name
+	-->	
+	
+	
+	<!-- Autowired지원속성 : 수동생성시에는 반드시 기록  -->
+	<context:annotation-config/>
+		
+	<bean id="visit_dao" class="dao.VisitDao" autowire="default"/>		
+	
+</beans>
