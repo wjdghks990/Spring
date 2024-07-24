@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+
+	<!-- 조회 -->
+	<select id="comment_list" parameterType="int" resultType="vo.CommentVo">
+		select * from comment_tb where b_idx = #{ b_idx } order by cmt_idx desc
+	</select>	
+	
+	<!-- Paging조회 -->
+	<select id="comment_page_list" parameterType="Map" resultType="comment">
+		select * from
+		(
+			select
+				rank() over(order by cmt_idx desc) as no,
+				c.*
+			from
+			(
+				select * from comment_tb where b_idx=#{ b_idx }
+			) c
+		)
+		where no between #{ start } and #{ end }
+	</select>
+	
+	<!-- b_idx의 총 댓글 개수 -->
+	<select id="comment_row_total" parameterType="int" resultType="int">
+		select nvl(count(*),0) from comment_tb where b_idx=#{ b_idx }
+	</select>
+	
+	<!-- 추가 -->
+	<insert id="comment_insert" parameterType="vo.CommentVo">
+		insert into comment_tb values(
+									  seq_comment_tb_idx.nextVal,
+									  #{ cmt_content },
+									  #{ cmt_ip },
+									  sysdate,
+									  #{ b_idx },
+									  #{ mem_idx },
+									  #{ mem_name }
+									  )
+	</insert>	
+	
+	<!-- 삭제 -->
+	<delete id="comment_delete" parameterType="int">
+		delete from comment_tb where cmt_idx=#{ cmt_idx }
+	</delete>
+	
+</mapper>
