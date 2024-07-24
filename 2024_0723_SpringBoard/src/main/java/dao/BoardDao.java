@@ -13,4 +13,12 @@ public interface BoardDao {
 	BoardVo selectOne(int b_idx);
 
 	int update_readhit(int b_idx);
+
+	int update_step(BoardVo baseVo);
+
+	int reply(BoardVo vo);
+
+	int update_delete(int b_idx);
+
+	int update(BoardVo vo);
 }

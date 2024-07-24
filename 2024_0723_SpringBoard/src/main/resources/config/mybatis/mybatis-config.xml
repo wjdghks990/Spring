@@ -2,6 +2,7 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+	
 	<settings>
 		<setting name="cacheEnabled" value="false" />
 		<setting name="useGeneratedKeys" value="true" />
@@ -11,11 +12,13 @@
 	<typeAliases>
 		<typeAlias type="vo.MemberVo" alias="member"/>
 		<typeAlias type="vo.BoardVo" alias="board"/>
+		<typeAlias type="vo.CommentVo" alias="comment"/>
 	</typeAliases>
 	
 	<mappers>
 		<mapper resource="config/mybatis/mapper/member.xml" />
 		<mapper resource="config/mybatis/mapper/board.xml" />
+		<mapper resource="config/mybatis/mapper/comment.xml" />
 	</mappers>
 	
 </configuration>

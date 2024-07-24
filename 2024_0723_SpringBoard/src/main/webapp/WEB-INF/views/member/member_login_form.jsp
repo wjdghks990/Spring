@@ -81,6 +81,7 @@
 </head>
 <body>
 <form>
+	<input type="hidden" name="url" value="${ param.url }">
 	<div id="box">
 		<div class="panel panel-primary">
 			<div class="panel-heading"><h5>로그인</h5></div>

@@ -15,6 +15,34 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 			
 <!-- 	<bean id="board_dao" class="dao.BoardDaoImpl">
 		<property name="sqlSession" ref="sqlSession"/>
-	</bean>	 -->			
+	</bean>	 -->	
+	
+	
+	<!-- Autowired지원속성 : 수동생성시에는 반드시 기록  -->
+	<context:annotation-config/>
+	
+	<!-- CommentDao 생성 -->
+	<!--  								autowire => default: byType -> byName
+													byType : Type이 동일한 객체 자동연결
+													byName : Name이 동일한 객체 자동연결
+	-->
+	<bean id="comment_dao" class="dao.CommentDaoImpl" autowire="default"></bean>		
 	
 </beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -82,6 +82,6 @@ insert into board values(seq_board_idx.nextval,
 					     2
 					     )
 					     
-delete from board  where b_idx = 7			     
+delete from board  where b_idx = 17			     
 
 */

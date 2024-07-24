@@ -86,9 +86,9 @@ public class MemberController {
 		return "redirect:login_form.do";
 	}
 		
-	// /member/login.do?mem_id=one&mem_pwd=1234
+	// /member/login.do?mem_id=one&mem_pwd=1234&url=
 	@RequestMapping("login.do")
-	public String login(String mem_id,String mem_pwd, RedirectAttributes ra) {
+	public String login(String mem_id,String mem_pwd,String url,RedirectAttributes ra) {
 		
 		MemberVo user = member_dao.selectOne(mem_id);
 		
@@ -112,7 +112,10 @@ public class MemberController {
 		// 
 		session.setAttribute("user", user);
 		
-		return "redirect:../board/list.do";
+		if(url.isEmpty())
+			return "redirect:../board/list.do";
+		else 
+			return "redirect:" + url;
 	}
 	
 	@RequestMapping("logout.do")

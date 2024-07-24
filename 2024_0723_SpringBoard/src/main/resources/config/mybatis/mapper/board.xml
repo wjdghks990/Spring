@@ -31,10 +31,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					     )
 	</insert>
 	
+	<!-- 답글쓰기 -->
+	<insert id="board_reply" parameterType="vo.BoardVo">
+		insert into board values(seq_board_idx.nextval, 
+					     #{ b_subject },
+					     #{ b_content },
+					     #{ b_ip },
+					     sysdate,
+					     0,
+					     'y',
+					     #{ mem_idx },
+					  	 #{ mem_name },
+					     #{ b_ref },
+					     #{ b_step },
+					     #{ b_depth }
+					     )
+	</insert>
+	
 	<!-- 조회수 증가 -->
 	<update id="board_update_readhit" parameterType="int">
 		update board set b_readhit = b_readhit+1 where b_idx=#{ b_idx }
 	</update>
+	
+	<!-- 같은 baseVo에서 기준글보다 step이 큰 게시물의 step을 1씩 증가: 답글작업 -->
+	<update id="board_update_step" parameterType="vo.BoardVo">
+		update board set b_step = b_step + 1 
+		where b_ref=#{ b_ref } and b_step > #{ b_step }
+	</update>
+	
+	<!--  -->
+	<update id="board_update_b_use">
+		update board set b_use = 'n' where b_idx = #{ b_idx }
+	</update>
+	
+	<update id="board_update" parameterType="vo.BoardVo">
+		update board set b_subject   = #{ b_subject },
+					     b_content   = #{ b_content },
+					     b_ip	     = #{ b_ip },
+					     b_regdate 	 = sysdate
+					     where b_idx = #{ b_idx }					     
+	</update>
+
+	
 	
 	
 	

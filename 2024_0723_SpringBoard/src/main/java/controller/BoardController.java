@@ -111,5 +111,113 @@ public class BoardController {
 		
 		return "board/board_view";
 	}
+	
+	// 답글쓰기 폼
+	@RequestMapping("reply_form.do")
+	public String reply_form() {
+		
+		return "board/board_reply_form";
+	}
+	
+	// 답글쓰기
+	// /bbs/board/reply.do?b_idx=12&b_subject=답글&b_content=내용
+	
+	@RequestMapping("reply.do")
+	public String reply(BoardVo vo, RedirectAttributes ra) {
+		
+		MemberVo user = (MemberVo) session.getAttribute("user");
+		
+		if(user == null) {
+			
+			ra.addAttribute("reason", "session_timeout");
+			
+			return "redirect:../member/login_form.do";
+		}
+		
+		vo.setMem_idx(user.getMem_idx());
+		vo.setMem_name(user.getMem_name());
+		
+		// 기준글정보 얻어온다
+		BoardVo baseVo = board_dao.selectOne(vo.getB_idx());
+		
+		// 기준글보다 step이 큰 게시물의 step을 1씩 증가
+		int res = board_dao.update_step(baseVo);
+		
+		// 답글의 b_ref,b_step,b_depth설정
+		vo.setB_ref(baseVo.getB_ref()); // 기준글의 b_ref를 넣는다.
+		vo.setB_step(baseVo.getB_step()+1); // 답글step = 기준글 step+1
+		vo.setB_depth(baseVo.getB_depth()+1);// 답글depth = 기준글depth + 1
+				
+		// IP넣기
+		String b_ip = request.getRemoteAddr();
+		vo.setB_ip(b_ip);
+		
+		// \n, <br>
+		String b_content = vo.getB_content().replaceAll("\n", "<br>");
+		vo.setB_content(b_content);
+		
+		
+		// 답글 추가(DB insert)
+		res = board_dao.reply(vo);
+		
+		return "redirect:list.do";
+	}
+	
+	// /bbs/board/delete.do?b_idx=18
+	@RequestMapping("delete.do")
+	public String delete(int b_idx) {
+		
+		//삭제 처리 : b_use : 'n'
+		int res = board_dao.update_delete(b_idx);
+		
+		return "redirect:list.do";
+	}
+	
+	// 수정 폼
+	@RequestMapping("modify_form.do")
+	public String modify_form(int b_idx, Model model) {
+		
+		BoardVo vo = board_dao.selectOne(b_idx);
+		
+		String b_content = vo.getB_content().replaceAll("\n", "<br>");
+		vo.setB_content(b_content);
+		
+		model.addAttribute("vo", vo);
+		
+		
+		return "board/board_modify_form";
+	}
+	
+	// 수정
+	// /bbs/board/modify.do?b_idx=&b_subject=굿굿&b_content=나이수~
+	@RequestMapping("modify.do")
+	public String modify(BoardVo vo, RedirectAttributes ra) {
+		
+		MemberVo user = (MemberVo) session.getAttribute("user");
+		
+		if(user == null) {
+			
+			ra.addAttribute("reason", "session_timeout");
+			
+			return "redirect:../member/login_form.do";
+		}
+		
+		//vo.setMem_idx(user.getMem_idx());
+		//vo.setMem_name(user.getMem_name());
+		
+		// 작성자 IP
+		String b_ip = request.getRemoteAddr();
+		vo.setB_ip(b_ip);
+		
+		String b_content = vo.getB_content().replaceAll("\n", "<br>");
+		vo.setB_content(b_content);
+		
+		int res = board_dao.update(vo);
+		
+		ra.addAttribute("b_idx", vo.getB_idx());
+		
+		return "redirect:view.do";
+	}
+	
 }
 
