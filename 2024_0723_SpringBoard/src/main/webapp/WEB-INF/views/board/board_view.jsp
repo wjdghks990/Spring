@@ -131,8 +131,10 @@
 		
 	} // end - comment_insert()
 	
+	var g_page = 1;
 	// 댓글목록 요청
 	function comment_list(page) {
+		g_page = page;
 		
 		$.ajax({
 			

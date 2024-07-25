@@ -15,6 +15,22 @@ public class BoardVo {
 	int 	b_step;
 	int 	b_depth;
 	
+	int		no;
+	int		cmt_count;
+	
+	
+	public int getNo() {
+		return no;
+	}
+	public void setNo(int no) {
+		this.no = no;
+	}
+	public int getCmt_count() {
+		return cmt_count;
+	}
+	public void setCmt_count(int cmt_count) {
+		this.cmt_count = cmt_count;
+	}
 	public int getB_idx() {
 		return b_idx;
 	}

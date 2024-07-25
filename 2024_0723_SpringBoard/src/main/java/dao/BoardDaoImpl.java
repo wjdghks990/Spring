@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,17 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectList("board.board_list");
 	}
 
+	@Override
+	public List<BoardVo> selectList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("board.board_page_list", map);
+	}
+	@Override
+	public int selectRowTotal(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("board.board_row_total", map);
+	}
+	
 	@Override
 	public int insert(BoardVo vo) {
 		// TODO Auto-generated method stub
@@ -67,6 +79,8 @@ public class BoardDaoImpl implements BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.update("board.board_update", vo);
 	}
+
+
 	
 	
 }

@@ -136,7 +136,7 @@
 			<!-- 데이터가 있는 경우 -->
 			<c:forEach var="vo" items="${ list }">
 				<tr>
-					<td>${ vo.b_idx }</td>
+					<td><%-- ${ vo.b_idx } --%>${ vo.no }</td>
 					
 					<td>
 					<!-- 답글이면 b_depth만큼 들여쓰기 -->
@@ -159,7 +159,13 @@
 					<!-- 삭제안된 게시물 -->
 					<c:if test="${ vo.b_use eq 'y' }">
 						<span class="b_subject">
-							<a href="view.do?b_idx=${ vo.b_idx }">${ vo.b_subject }</a>
+							<a href="view.do?b_idx=${ vo.b_idx }">
+								${ vo.b_subject }
+								<c:if test="${ vo.cmt_count ne 0 }">
+									<span class="badge" style="background: #F7230E;">&nbsp;${ vo.cmt_count }</span>
+								</c:if>
+								
+							</a>
 						</span>
 					</c:if>	
 						
@@ -170,6 +176,11 @@
 				</tr>
 			</c:forEach>
 		</table>
+		
+		<!-- PageMenu -->
+		<div style="text-align: center;">
+			${ pageMenu }
+		</div>
 
 	</div>
 </body>

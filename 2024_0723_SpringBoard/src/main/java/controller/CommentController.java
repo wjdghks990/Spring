@@ -85,4 +85,18 @@ public class CommentController {
 		
 		return json.toString();
 	}
+	
+	// /comment/delete.do?cmt_idx=5
+	@RequestMapping(value = "delete.do", produces = "application/json; charset=utf-8;")
+	@ResponseBody
+	public String delete(int cmt_idx) {
+		
+		int res = comment_dao.delete(cmt_idx); // 들어간 행수
+		
+		JSONObject json = new JSONObject();
+		json.put("result", res==1); // 제대로 delete가 되었느냐 // {"result" : true} or {"result" : false}
+		
+		return json.toString();
+		
+	}
 }

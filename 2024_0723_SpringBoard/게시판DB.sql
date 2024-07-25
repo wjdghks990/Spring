@@ -82,6 +82,22 @@ insert into board values(seq_board_idx.nextval,
 					     2
 					     )
 					     
-delete from board  where b_idx = 17			     
+delete from board  where b_idx = 17
+
+-- paging menu
+
+select * from
+	(
+	select
+		rank() over(order by b_ref desc, b_step asc) as no,
+		b.*,
+		(select count(*) from comment_tb where b_idx=b.b_idx) as cmt_count
+	from	
+	(select * from board) b
+	)
+where no between 1 and 10		  
+
+-- 해당게시글에 연결된 댓글의 갯수
+select count(*) from comment_tb where b_idx=21   		        		     
 
 */

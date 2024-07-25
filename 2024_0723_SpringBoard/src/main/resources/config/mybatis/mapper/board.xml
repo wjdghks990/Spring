@@ -9,6 +9,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from board order by b_ref desc, b_step asc
 	</select>
 	
+	<!-- paging 별 조회 -->
+	<select id="board_page_list" parameterType="Map" resultType="board"> 	
+		select * from
+		(
+			select
+				rank() over(order by b_ref desc, b_step asc) as no,
+				b.*,
+				(select count(*) from comment_tb where b_idx=b.b_idx) as cmt_count
+			from	
+			(select * from board) b
+		)
+		where no between ${ start } and ${ end }
+	</select>
+	
+	<!-- 전체 게시물 수 -->
+	<select id="board_row_total" parameterType="Map" resultType="int">
+		select nvl(count(*),0) from board
+	</select>
+	
 	<!-- b_idx에 해당되는 게시물 1건 얻어오기 -->
 	<select id="board_one" parameterType="int" resultType="board">
 		select * from board where b_idx=#{ b_idx }
@@ -71,6 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					     b_regdate 	 = sysdate
 					     where b_idx = #{ b_idx }					     
 	</update>
+	
+	
 
 	
 	
