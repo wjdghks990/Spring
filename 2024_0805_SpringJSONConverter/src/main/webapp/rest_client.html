@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<!--  Bootstrap  3.x  -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<style type="text/css">
+   #box{
+      width: 700px;
+      margin: auto;
+      margin-top: 50px;
+   }
+   
+   hr{
+      color: navy;
+      height: 2px;
+   }
+   
+   .common{
+      
+      border: 1px solid #eeeeee;
+      box-shadow: 1px 1px 1px gray;
+      margin: 5px;
+      
+   }
+   
+   .content{
+      min-height: 80px;
+   }
+   
+   textarea {
+	  resize: none;
+   }
+   
+</style>
+
+<script type="text/javascript">
+   
+   $(document).ready(function(){
+	  visit_list();   
+   });
+   
+   function visit_list(){
+
+	   
+	   /*
+	    res_data=
+	    {
+			    "search_date": "Mon Aug 05 13:36:54 KST 2024",
+			    "size": 19,
+			    "data":
+			    	[
+				        {
+				            "no": 1,
+				            "idx": 63,
+				            "name": "홍길동",
+				            "content": "REST API POST전송한 데이터",
+				            "pwd": "1234",
+				            "ip": "0:0:0:0:0:0:0:1",
+				            "regdate": "2024-08-05 12:14:48.0"
+				        },
+				        {},
+				        {},
+				        {}
+			        ]
+	        }
+	   
+	   
+	   */
+	   
+	   
+	   
+	   $.ajax({
+		   url		:	"rest/visits",
+		   dataType	:	"json",
+		   success	:	function(res_data){
+			   
+			   let visit_array = res_data.data;
+			   
+			   let html = "";
+			   //      변수  of    배열  
+			   for(let visit of visit_array){
+				   //visit = {"idx":1,"name":"홍길동",....}
+				   //console.log(visit.name);
+				   html += 
+				   `
+				       <form class='form-inline'>
+				           <input type="hidden"  name="idx" value="${ visit.idx }">  
+						   <div class="panel panel-info">
+						     <div class="panel-heading"><b>${ visit.name}</b>님의 글</div>
+						     <div class="panel-body">
+						        <div class="common content">${ visit.content }</div>
+						        <div class="common regdate">${ visit.regdate }</div>
+						        <div class="common">
+						        비밀번호(${ visit.pwd }):<input class="form-control"   type="password" name="c_pwd">
+						                 <input class="btn btn-danger" type="button" value="삭제" onclick="visit_delete(this.form);">
+						                 <input class="btn btn-info"   type="button" value="수정" onclick="visit_modify(this.form);">
+						       </div>
+						        
+						     </div>
+						     
+						   </div>
+					   </form>
+				   `;
+			   }//end:for
+			   
+			   $("#disp").html(html);
+			   
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+	   });//end:ajax
+	   
+   }//end:visit_list
+   
+   
+   
+   function visit_insert(){
+	   
+	   let name    = $("#name").val().trim();
+	   let content = $("#content").val().trim();
+	   let pwd     = $("#pwd").val().trim();
+	   
+	   if(name==''){
+		   alert("작성자명을 입력하세요!");
+		   $("#name").val("");
+		   $("#name").focus();
+		   return;
+	   }
+	   
+	   if(content==''){
+		   alert("내용을 입력하세요!");
+		   $("#content").val("");
+		   $("#content").focus();
+		   return;
+	   }
+	   
+	   if(pwd==''){
+		   alert("비밀번호를 입력하세요!");
+		   $("#pwd").val("");
+		   $("#pwd").focus();
+		   return;
+	   }
+	   
+	   let visit = {"name":name,"content":content,"pwd":pwd };
+	   
+	   
+	   // JSON.stringify :  JSON -> Text Data변환시
+	   // JSON.parse     :  Text -> JSON Object변환시
+	   
+	   //Ajax insert
+	   $.ajax({
+		   type			:	"POST",
+		   url			:	"rest/visit",
+		   contentType	:	"application/json;charset=utf-8",
+		   data			:	JSON.stringify(visit), 
+		   dataType		:	"json",
+		   success		:	function(res_data){
+			   //res_data = {"result" : true }  or {"result" : false } 
+			   
+			   if(res_data.result==false){
+				   alert("글쓰기 실패!!");
+				   return;
+			   }
+			   
+			   //성공시 코드
+			   //입력창 초기화
+			   $("#name").val("");
+			   $("#content").val("");
+			   $("#pwd").val("");
+			   
+			   $("#btn_register").click();
+			   
+			   //목록가져오기
+			   visit_list();
+			   
+			   
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+	   });
+	   
+	   
+	   
+   }//end:visit_insert
+   
+   
+   
+   function visit_delete(f){
+	   
+	   let idx   = f.idx.value;
+	   let c_pwd = f.c_pwd.value.trim();
+	   
+	   if(c_pwd==''){
+		   alert("삭제 비밀번호를 입력하세요!");
+		   f.c_pwd.value="";
+		   f.c_pwd.focus();
+		   return;
+	   }
+	   
+	   console.log(idx,c_pwd);
+	   
+	   //Ajax로 비밀번호체크확인
+	   $.ajax({
+		   type		:	'GET',
+		   url		:	`rest/visit/idx/${idx}/c-pwd/${c_pwd}`,
+		   dataType	:	"json",
+		   success	:	function(res_data){
+			   //res_data = {"result" : true }  or {"result" : false } 
+			   if(res_data.result==false){
+				   alert("비밀번호가 틀립니다!");
+				   return;
+			   }
+			   
+			   //비밀번호가 일치했을경우 처리
+			   
+			   if(confirm("정말 삭제하시겠습니까?")==false)return;
+			   
+			   //Ajax로 삭제요청 처리
+			   delete_visit(idx);
+			   
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+	   });
+	   
+   }//end:visit_delete
+   
+   
+   function delete_visit(idx){
+	   
+	   $.ajax({
+		   type		:	'DELETE',
+		   url		:	`rest/visit/${idx}`,
+		   dataType	:	"json",
+		   success	:	function(res_data){
+			   //res_data = {"result" : true }  or {"result" : false } 
+			   if(res_data.result==false){
+				   alert("삭제실패!");
+				   return;
+			   }
+			   //전체 목록보기
+			   visit_list();
+			   
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+	   });
+	   
+	   
+	   
+   }//end:delete_visit
+   
+   
+   
+   
+   function visit_modify(f){
+	   
+	   
+	   let idx   = f.idx.value;
+	   let c_pwd = f.c_pwd.value.trim();
+	   
+	   if(c_pwd==''){
+		   alert("수정 비밀번호를 입력하세요!");
+		   f.c_pwd.value="";
+		   f.c_pwd.focus();
+		   return;
+	   }
+	   
+	   console.log(idx,c_pwd);
+	   
+	   //Ajax로 비밀번호체크확인
+	   $.ajax({
+		   type		:	'GET',
+		   url		:	`rest/visit/idx/${idx}/c-pwd/${c_pwd}`,
+		   dataType	:	"json",
+		   success	:	function(res_data){
+			   //res_data = {"result" : true }  or {"result" : false } 
+			   if(res_data.result==false){
+				   alert("비밀번호가 틀립니다!");
+				   return;
+			   }
+			   
+			   //비밀번호가 일치했을경우 처리
+			   visit_modify_form(idx);
+			   
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+	   });
+   }//end:visit_modify()
+   
+   //수정폼 띄우기
+   function visit_modify_form(idx){
+	   
+	   // 수정시에도 idx를 전달(필수)
+	   $("#update_idx").val(idx);
+	   //수정폼 모달로 띄우기
+	   $("#myModal").modal({backdrop: "static"});
+	   
+	   //idx에 해당되는 게시물 가져와서 myModal(수정)폼에 원본데이터 넣기
+	   $.ajax({
+		   
+		   type		:	"GET",
+		   url		:	`rest/visit/${idx}`,
+		   dataType	:	"json",
+		   success	:	function(res_data){
+			   //res_data = {"no":1,"idx":63,"name":"홍길동","content":"REST API POST전송한 데이터","pwd":"1234","ip":"0:0:0:0:0:0:0:1","regdate":"2024-08-05 13:48:08.0"}
+			   $("#update_name").val(res_data.name);
+			   $("#update_content").val(res_data.content.replaceAll("<br>","\n"));
+			   $("#update_pwd").val(res_data.pwd);
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+		   
+	   });
+   
+   }//end: visit_modify_form()
+   
+   function modify_visit(){	 
+		   
+	   let update_idx	  = $("#update_idx").val(); // 수정 폼에서 idx를 받아온것
+	   let update_name    = $("#update_name").val().trim();
+	   let update_content = $("#update_content").val().trim();
+	   let update_pwd     = $("#update_pwd").val().trim();
+	   
+	   if(update_name==''){
+		   alert("작성자명을 입력하세요!");
+		   $("#update_name").val("");
+		   $("#update_name").focus();
+		   return;
+	   }
+	   
+	   if(update_content==''){
+		   alert("내용을 입력하세요!");
+		   $("#update_content").val("");
+		   $("#update_content").focus();
+		   return;
+	   }
+	   
+	   if(update_pwd==''){
+		   alert("비밀번호를 입력하세요!");
+		   $("#update_pwd").val("");
+		   $("#update_pwd").focus();
+		   return;
+	   }
+	   if(confirm("정말 수정하시겠습니까?")==false) return;
+	   
+	   let update_visit = {"idx":update_idx, "name":update_name,"content":update_content,"pwd":update_pwd };
+	   
+	   // JSON.stringify :  JSON -> Text Data변환시
+	   // JSON.parse     :  Text -> JSON Object변환시
+	   
+	   //Ajax update
+	   $.ajax({
+		   type			:	"PUT",
+		   url			:	"rest/visit",
+		   contentType	:	"application/json;charset=utf-8",
+		   data			:	JSON.stringify(update_visit), 
+		   dataType		:	"json",
+		   success		:	function(res_data){
+			   //res_data = {"result" : true }  or {"result" : false } 
+			   
+			   if(res_data.result==false){
+				   alert("수정 실패!!");
+				   return;
+			   }
+			   
+			   //성공시 코드(모달 닫기)
+			   $(".close").click();
+			   		   
+			   //목록가져오기
+			   visit_list();
+			   
+		   },
+		   error	:	function(err){
+			   alert(err.responseText);
+		   }
+	   });
+	   
+   }
+
+   let bAdd = false;//글쓰기 추가 상태냐?
+   
+   function show_form(){
+	   
+	   //Toggle처리
+	   bAdd = !bAdd;
+	   $("#btn_register").val(bAdd ? "글쓰기 취소" : "글쓰기");
+	   
+	   $("#visit_insert_form").slideToggle();
+	   $("#disp").toggle();
+	   
+   }
+
+</script>
+
+
+</head>
+<body>
+
+<div id="box">
+
+	<hr>
+	  <h3>Visit Rest Client</h3>
+	<hr>
+	
+	<!-- 글쓰기 -->
+	<input  style="margin-bottom: 10px;" class="btn  btn-primary" type="button" id="btn_register" value="글쓰기" onclick="show_form();">
+	<form>
+		<div id="visit_insert_form" style="display: none;">
+			<div class="panel panel-primary">
+				<div class="panel-heading"><h3>방명록 쓰기</h3></div>
+				<div class="panel-body">
+				   <div>
+				     작성자 : <input class="form-control" id="name">
+				   </div>
+				   <div>
+				     내용: <textarea rows="5" cols="" class="form-control" id="content"></textarea>
+				   </div>
+				   <div>
+				     비밀번호 : <input type="password" class="form-control" id="pwd">
+				   </div>
+				   <div style="text-align: center;">
+				      <input class="btn btn-info" type="button"  value="등록하기" onclick="visit_insert();">
+				   </div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+	<!-- 목록출력 -->
+	<div id="disp"></div>
+	
+</div>
+<!-- end: id=box  -->
+
+
+
+<!-- 수정폼 모달 -->
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal-dialog">
+		<input type="hidden" id="update_idx">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">방명록 수정</h4>
+			</div>
+			<div class="modal-body">
+				<div>
+					작성자:<input class="form-control" id="update_name">
+				</div>
+				<div>
+					내용:
+					<textarea class="form-control" cols="5" id="update_content"></textarea>
+				</div>
+				<div>
+					비밀번호:<input class="form-control" type="password" id="update_pwd">
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-info"
+					onclick="modify_visit();">수정하기</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">취소하기</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+</body>
+</html>

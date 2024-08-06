@@ -208,7 +208,20 @@
 		<hr>
 		
 		<div id="comment_display">
-			
+		<%-- <c:forEach var="vo" items="${ list }">
+				<!-- 자신의 글만 삭제메뉴 활성화 -->
+				<c:if test="${ user.mem_idx eq vo.mem_idx }">
+					<div style="text-align: right;">
+						<input type="button" value="x"
+							style="background: #F7230E; color: white;"
+							onclick="comment_delete('${ vo.cmt_idx}');">
+					</div>
+				</c:if>
+				<div>${ vo.mem_name }</div>
+				<div>${ vo.cmt_regdate }</div>
+				<div>${ vo.cmt_content }</div>
+				<hr>
+			</c:forEach> --%>
 		</div>
 	</div>
 </body>
